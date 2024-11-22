@@ -14,8 +14,8 @@ from Dataset.AlloysDataset import AlloysDataset2
 from torch.utils.data import DataLoader ,random_split
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-# 3. 数据加载和预处理
-dataset = AlloysDataset2(r"C:\Users\PC\Desktop\Final_data\Final_data\Newest_data\Final_train_data.xlsx", element_path=r"C:\Users\PC\Desktop\element_data.xlsx", target_feature='density')
+
+dataset = AlloysDataset2('/path', target_feature='density')
 
 batch_size = 64
 train_size = int(0.8 * len(dataset))
@@ -116,7 +116,7 @@ param_bounds = {
     'num_neurons_4': (20, 100)
 }
 
-# 7. 贝叶斯优化过程
+
 optimizer = BayesianOptimization(f=objective, pbounds=param_bounds, random_state=1)
 optimizer.maximize(init_points=5, n_iter=25)
 

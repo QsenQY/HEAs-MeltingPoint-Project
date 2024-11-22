@@ -5,22 +5,13 @@ import numpy as np
 
 additional_features_cols = [ 'VEC', 'electronegativity', 'cohesive energy',  'density', 'radius', 'heat of fusion']
 def element_to_id_conversion(data, element_to_id=None):
-    # print("Type of data in conversion function:", type(data))
-    # print('Alloys' in data.columns)
-    # print("First few rows of data in conversion function:", data.head())
 
-    # if isinstance(data, pd.Series):
-    #     print("Data is a Series.")
-    # elif isinstance(data, pd.DataFrame):
-    #     print("Data is a DataFrame.")
-    # else:
-    #     print("Data is an unknown type.")
     if element_to_id is None:
         all_elements = set()
         try:
             for alloy in data['Alloys']:
-                if not isinstance(alloy, str):  # 检查是否为字符串
-                    alloy = str(alloy)          # 如果不是字符串，转换为字符串
+                if not isinstance(alloy, str):  
+                    alloy = str(alloy)          
                 elements = alloy.split('-')
                 for element in elements:
                     all_elements.add(element)
@@ -31,7 +22,6 @@ def element_to_id_conversion(data, element_to_id=None):
 
         element_to_id = {element: idx for idx, element in enumerate(sorted(all_elements))}
 
-        # 新添加的检查和打印语句
         # print(f"Generated element_to_id: {element_to_id}")
 
     padding_value = len(element_to_id)

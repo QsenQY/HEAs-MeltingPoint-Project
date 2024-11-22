@@ -17,7 +17,7 @@ from torch.utils.tensorboard import SummaryWriter
 from sklearn.metrics import r2_score
 from math import sqrt
 
-# 设置随机种子数
+
 SEED = 42
 torch.manual_seed(SEED)
 torch.backends.cudnn.deterministic = True
@@ -59,11 +59,11 @@ def main(best_lrs):
     feature_names = ['VEC', 'electronegativity', 'cohesive energy', 'TEC', 'TC', 'density']
 
     dataset = {feature: AlloysDataset2(
-        data_path=r"C:\Users\PC\Desktop\Final_data\Final_data\Newest_data\Final_train_data.xlsx",
-        element_path=r"C:\Users\PC\Desktop\element_data.xlsx", target_feature=feature) for feature in feature_names}
+        data_path='/path',
+        element_path='/path', target_feature=feature) for feature in feature_names}
     test_datasets = {
-        feature: AlloysDataset2(r"C:\Users\PC\Desktop\Final_data\Final_data\测试集2\test_data_chunk_1.xlsx",
-                                element_path=r"C:\Users\PC\Desktop\element_data.xlsx",
+        feature: AlloysDataset2('/path',
+                                element_path='/path',
                                 target_feature=feature) for feature in feature_names}
 
 
@@ -72,7 +72,7 @@ def main(best_lrs):
     val_datasets = {}
     writers = {feature: SummaryWriter(log_dir=f"./logs/{feature}") for feature in feature_names}
 
-    # 划分训练和验证数据集
+
     for feature in feature_names:
         dataset_size = len(dataset[feature])
         train_size = int(0.8 * dataset_size)
@@ -81,20 +81,20 @@ def main(best_lrs):
         train_datasets[feature] = train_dataset
         val_datasets[feature] = val_dataset
 
-    # 数据加载器
+
     train_loaders = {feature: DataLoader(train_datasets[feature], batch_size=batch_size, shuffle=True, num_workers=12) for feature in
                      feature_names}
     val_loaders = {feature: DataLoader(val_datasets[feature], batch_size=batch_size, shuffle=False) for feature in
                    feature_names}
     test_loaders = {feature: DataLoader(test_datasets[feature], batch_size=batch_size, shuffle=False) for feature in feature_names}
 
-    # 模型参数
+
     EMBEDDING_DIM = 8
     additional_features_dims = {feature: dataset[feature].additional_features.shape[1] for feature in feature_names}
-    num_elements = len(next(iter(dataset.values())).element_to_id) + 1  # 取第一个数据集的属性作为参考
+    num_elements = len(next(iter(dataset.values())).element_to_id) + 1  
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    # 初始化模型、损失函数、优化器和早停
+
     models = {
         'VEC': PredictVEC(num_elements, EMBEDDING_DIM, additional_features_dims['VEC'],
                           dataset['VEC'].padding_value).to(device),
@@ -116,7 +116,7 @@ def main(best_lrs):
 
     early_stoppings = {feature: EarlyStopping(patience=5, verbose=True) for feature in feature_names}
 
-    # 训练和验证模型
+   
     EPOCHS = 50
     for epoch in range(EPOCHS):
         for feature in feature_names:

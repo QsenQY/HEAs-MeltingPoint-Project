@@ -1,4 +1,3 @@
-# 1. 导入所需的库
 import torch
 from Models.PredictMeltingPoint_model import ExtendedAlloyModel
 from bayes_opt import BayesianOptimization
@@ -10,9 +9,9 @@ from torch.utils.data import DataLoader ,random_split
 import pandas as pd
 feature_cols = ['VEC', 'electronegativity', 'cohesive energy', 'density', 'radius', 'heat of fusion']
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-# 3. 数据加载和预处理
-raw_data = pd.read_excel(r"C:\Users\PC\Desktop\train_data(add_feature)test.xlsx")
-dataset = AlloysDataset(r"C:\Users\PC\Desktop\element_data.xlsx",additional_features=raw_data[feature_cols].values, data=raw_data)
+
+raw_data = pd.read_excel('/path')
+dataset = AlloysDataset('/path',additional_features=raw_data[feature_cols].values, data=raw_data)
 
 batch_size = 128
 train_size = int(0.8 * len(dataset))
@@ -29,7 +28,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 def train_model(lr, dropout, num_neurons, epochs=20):
     model = ExtendedAlloyModel(num_elements, EMBEDDING_DIM, additional_features_dim, dataset.padding_value,
                                dropout=dropout, num_neurons=num_neurons)
-    # ... [其他代码保持不变]
+
     model.to(device)
     criterion = nn.MSELoss().to(device)
     optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=0.01)
@@ -96,11 +95,10 @@ def train_model(lr, dropout, num_neurons, epochs=20):
 
     return -best_val_loss  # We return negative loss because BayesianOptimization maximizes the objective function
 
-# 5. 目标函数
+
 def objective(lr, dropout, num_neurons_1, num_neurons_2, num_neurons_3, num_neurons_4,num_neurons_5):
     return train_model(lr, dropout, [num_neurons_1, num_neurons_2, num_neurons_3, num_neurons_4,num_neurons_5])
 
-# 6. 超参数的范围定义
 param_bounds = {
     'lr': (0.000001, 1),
     'dropout': (0.1, 0.5),
@@ -112,7 +110,7 @@ param_bounds = {
 
 }
 
-# 7. 贝叶斯优化过程
+
 optimizer = BayesianOptimization(f=objective, pbounds=param_bounds, random_state=1)
 optimizer.maximize(init_points=5, n_iter=95)
 

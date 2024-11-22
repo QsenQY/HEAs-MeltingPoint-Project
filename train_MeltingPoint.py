@@ -18,7 +18,7 @@ from copy import deepcopy
 from sklearn.metrics import mean_absolute_error
 
 
-# 设置随机种子
+
 SEED = 42
 torch.manual_seed(SEED)
 torch.backends.cudnn.deterministic = True
@@ -107,7 +107,7 @@ def train_model(train_loader, val_loader, model, optimizer, criterion, scheduler
             no_improvement_count = 0  # Reset counter
             best_model = deepcopy(model)  # Save the best model
             torch.save(best_model.state_dict(),
-                       f'C:\\Users\\PC\\Desktop\\Final_data\\model_weight\\4hiddenlayer\\MeltingPointModel_fold_{fold}.pt')
+                       f'/path/')
             print("Save best model")
         else:
             no_improvement_count += 1
@@ -131,7 +131,7 @@ def k_fold_cross_validation(dataset, model_init_func, criterion, scheduler, devi
     best_global_val_loss = float('inf')
     best_global_model = None
 
-    for train_idx, val_idx in kf.split(dataset.data):  # 注意这里我们分割的是dataset.data
+    for train_idx, val_idx in kf.split(dataset.data):  
         print(f"Starting fold {fold + 1}/{k}")
         train_data_raw = dataset.data.iloc[train_idx]
         val_data_raw = dataset.data.iloc[val_idx]
@@ -141,16 +141,16 @@ def k_fold_cross_validation(dataset, model_init_func, criterion, scheduler, devi
 
         val_features, _ = utils.additional_features_scaling(val_data_raw, feature_cols, fold_scaler)
 
-        # 创建每个折叠的训练和验证数据集
+      
         train_dataset = AlloysDataset(
             data=train_data_raw,
-            element_path=r"C:\Users\PC\Desktop\element_data.xlsx",  # 正确的element_path
-            additional_features=train_features # 使用已标准化的特征
+            element_path='/path',  
+            additional_features=train_features 
         )
         val_dataset = AlloysDataset(
             data=val_data_raw,
-            element_path=r"C:\Users\PC\Desktop\element_data.xlsx",  # 正确的element_path
-            additional_features=val_features  # 使用已标准化的特征
+            element_path='/path',  
+            additional_features=val_features  
         )
 
         train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
@@ -187,7 +187,7 @@ def k_fold_cross_validation(dataset, model_init_func, criterion, scheduler, devi
 
     # Use each fold's best model to predict on the entire dataset
     for fold in range(k):
-        fold_model_path = f'C:\\Users\\PC\\Desktop\\Final_data\\model_weight\\4hiddenlayer\\MeltingPointModel_fold_{fold}.pt'
+        fold_model_path = f'/path'
         best_global_model.load_state_dict(torch.load(fold_model_path))
         fold_predictions = []
         with torch.no_grad():
@@ -223,7 +223,7 @@ def model_init_func(dataset):
 
 def main():
     # Load dataset
-    raw_data = pd.read_excel(r"C:\Users\PC\Desktop\train_data(add_feature)test.xlsx")
+    raw_data = pd.read_excel('/path')
 
     # Prepare the data using the split_and_scale_data function
     # train_data, val_data, train_features, val_features, scaler = split_and_scale_data(
@@ -231,9 +231,9 @@ def main():
     # )
 
     # Create datasets for training and validation
-    train_dataset = AlloysDataset(r"C:\Users\PC\Desktop\element_data.xlsx", additional_features=raw_data[feature_cols].values, data=raw_data)
+    train_dataset = AlloysDataset('/path', additional_features=raw_data[feature_cols].values, data=raw_data)
 
-    test_data = pd.read_excel(r"C:\Users\PC\Desktop\Final_data\Final_data\测试集3\test_subset_3(add_feature).xlsx")
+    test_data = pd.read_excel('/path')
     # Create the test dataset
     global_scaler = StandardScaler()
     global_scaler.fit(raw_data[feature_cols])
@@ -246,8 +246,6 @@ def main():
         predict_mode=False
     )
 
-    # Scale the test data
-    # test_dataset.data[feature_cols], _ = utils.additional_features_scaling(test_dataset.data, feature_cols, scaler)
 
     test_loader = DataLoader(test_dataset, batch_size=64, shuffle=False)
 
@@ -284,7 +282,7 @@ def predict_with_ensemble(input_data, model_instance, n_models=5, save_path='ens
 
     # Load each model and make predictions
     for ensemble_idx in range(n_models):
-        model_path = f'C:\\Users\\PC\\Desktop\\Final_data\\model_weight\\4hiddenlayer\\MeltingPointModel_fold_{ensemble_idx}.pt'
+        model_path = '/path'
         model_instance.load_state_dict(torch.load(model_path))
         model_instance.eval()
 
@@ -305,7 +303,7 @@ def predict_with_ensemble(input_data, model_instance, n_models=5, save_path='ens
 
 def evaluate_MeltingPoint_Model(model, test_loader, criterion, device):
 
-    save_path = r"C:\Users\PC\Desktop\Final_data\model_weight\4hiddenlayer\MeltingPointModel_fold_1.pt"
+    save_path = '/path'
     model.load_state_dict(torch.load(save_path))
     model.eval()
 

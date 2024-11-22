@@ -69,5 +69,5 @@ predict_melting_point(
     element_data_path='/path',
     weights_path='path',
     save_path='/path',
-    scaler_path=r"C:\Users\PC\Desktop\HEA_MeltingPoint\scaler.pkl"
+    scaler_path='/path'
 )

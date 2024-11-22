@@ -46,7 +46,7 @@ def prepare_data(data, feature_cols, element_path):
 
     return train_dataset, val_dataset, scaler
 
-def train_model(train_loader, val_loader, model, optimizer, criterion, scheduler, device, writer, EPOCHS=20, patience=3, min_delta=0.001, fold=0, save_path=r"C:\Users\PC\Desktop\Final_data\model_weight\MeltingPointModel.pt"):
+def train_model(train_loader, val_loader, model, optimizer, criterion, scheduler, device, writer, EPOCHS=20, patience=3, min_delta=0.001, fold=0, save_path='/path'):
     best_val_loss = float('inf')
     best_model = None
     no_improvement_count = 0
@@ -178,7 +178,7 @@ def k_fold_cross_validation(dataset, model_init_func, criterion, scheduler, devi
     entire_features, _ = utils.additional_features_scaling(dataset.data, feature_cols)
     entire_dataset = AlloysDataset(
         data=dataset.data,
-        element_path=r"C:\Users\PC\Desktop\element_data.xlsx",
+        element_path='/path',
         additional_features = entire_features
     )
 
@@ -240,7 +240,7 @@ def main():
 
     test_additional_features, _ = utils.additional_features_scaling(test_data, feature_cols, global_scaler)
     test_dataset = AlloysDataset(
-        element_path=r"C:\Users\PC\Desktop\element_data.xlsx",
+        element_path='/path',
         additional_features=test_additional_features,
         data=test_data,
         predict_mode=False
